@@ -2,6 +2,7 @@
 {
     public enum Endpoints
     {
-        GetEchangeRate
+        GetEchangeRate,
+        GetExchangeRateFromCache
     }
 }
