@@ -1,44 +1,47 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using System;
 using WebAPIAutomation.Hooks;
 using WebAPIAutomation.IOC;
 using WebAPIAutomation.RestSharpHandler;
+using WebAPIAutomation.RestSharpHandler.Interface;
 
 namespace WebAPITest
 {
     public class CurrencyCacheTest : StartIOCContainer
     {
         protected IGetRequest _getRequest;
+        protected ILogger _logger;
 
         [OneTimeSetUp]
         public void Setup()
         {
             _getRequest = UnityWrapper.Resolve<IGetRequest>();
+            _logger = UnityWrapper.Resolve<ILogger>();
         }
 
-        [Test,Category("Get USD from Cache")]
+        [Test,Category("Get EUR from Cache")]
         public void VerifyStatusCode()
         {
-            var response = _getRequest.GetExchangeRateFromCache("USD","dollar");
-            var statusCode = response.StatusCode.ToString();
-            Assert.AreEqual(statusCode,"OK");
+            var response = _getRequest.GetExchangeRateFromCache("EUR","euro");
+            var responseObject = JsonConvert.SerializeObject(response);
+            var jsonObject = JObject.Parse(responseObject);
+            var success = jsonObject["success"].ToString();
+            Assert.AreEqual(success, "True");
         }
 
-        [Test, Category("Get USD from Cache")]
+        [Test, Category("Get EUR from Cache")]
         public void VerifyStatusCodea()
         {
-            var response = _getRequest.GetExchangeRateFromCache("USD", "dollars");
-            var content = response.Content;
-            var jsonObject = JObject.Parse(content);
+            var response = _getRequest.GetExchangeRateFromCache("EUR", "euros");
+            var responseObject = JsonConvert.SerializeObject(response);
+            var jsonObject = JObject.Parse(responseObject);
             var success = jsonObject["success"].ToString();
-            Assert.AreEqual(success,"True");
-            var bases = jsonObject["base"].ToString();
-            Assert.AreEqual(bases, "EUR");
+            Assert.AreEqual(success, "True");
             var rates = jsonObject["rates"];
-            var currency = rates["AED"].ToString();
-            var intCurrency = Convert.ToInt64(Math.Floor(Convert.ToDouble(currency)));
-            Assert.NotZero(intCurrency);
+            var euroRate = rates["EUR"].ToString();
+            var message = $"EUR : {euroRate}";
+            _logger.WriteLog(message);
         }
     }
 }

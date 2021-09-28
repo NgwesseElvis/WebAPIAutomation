@@ -12,11 +12,11 @@ namespace WebAPIAutomation.RestSharpHandler
             return MemoryCache.Default.Get(cacheKey) as T;
         }
 
-        public void Set(string cacheKey, object item, int minutes=5)
+        public void Set(string cacheKey, object item, int seconds = 35)
         {
             if (item != null)
             {
-                MemoryCache.Default.Add(cacheKey, item, DateTime.Now.AddMinutes(minutes));
+                MemoryCache.Default.Add(cacheKey, item, DateTime.Now.AddSeconds(seconds));
             }
         }
     }

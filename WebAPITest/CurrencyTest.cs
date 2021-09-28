@@ -1,20 +1,24 @@
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
+using System.Diagnostics;
 using WebAPIAutomation.Hooks;
 using WebAPIAutomation.IOC;
 using WebAPIAutomation.RestSharpHandler;
+using WebAPIAutomation.RestSharpHandler.Interface;
 
 namespace WebAPITest
 {
     public class CurrencyTest : StartIOCContainer
     {
         protected IGetRequest _getRequest;
+        protected ILogger _logger;
 
         [OneTimeSetUp]
         public void Setup()
         {
             _getRequest = UnityWrapper.Resolve<IGetRequest>();
+            _logger = UnityWrapper.Resolve<ILogger>();
         }
 
         [Test,Category("Get USD")]
@@ -33,12 +37,11 @@ namespace WebAPITest
             var jsonObject = JObject.Parse(content);
             var success = jsonObject["success"].ToString();
             Assert.AreEqual(success,"True");
-            var bases = jsonObject["base"].ToString();
-            Assert.AreEqual(bases, "EUR");
             var rates = jsonObject["rates"];
-            var currency = rates["AED"].ToString();
-            var intCurrency = Convert.ToInt64(Math.Floor(Convert.ToDouble(currency)));
-            Assert.NotZero(intCurrency);
+            var dollarRate = rates["USD"].ToString();
+            var message = $"USD : {dollarRate}";
+            _logger.WriteLog(message);
+
         }
     }
 }

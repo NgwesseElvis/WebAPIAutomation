@@ -11,6 +11,7 @@ namespace WebAPIAutomation.IOC
             UnityWrapper.Register<IGetResponse, GetResponse>();
             UnityWrapper.Register<ICacheService, CacheService>();
             UnityWrapper.Register<IErrorLogger, ErrorLogger>();
+            UnityWrapper.Register<ILogger, Logger>();
         }
     }
 }

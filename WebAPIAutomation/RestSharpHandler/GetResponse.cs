@@ -18,10 +18,6 @@ namespace WebAPIAutomation.RestSharpHandler
             var taskCompleteSourse = new TaskCompletionSource<IRestResponse<T>>();
             var restresults = await client.ExecuteAsync<T>(request);
             {
-                //if (restresults.ErrorException != null)
-                //{
-                //    throw new ApplicationException(Message, restresults.ErrorException);
-                //}
                 _errorLogger.TimeoutCheck(BaseUrl,request,restresults);
                 taskCompleteSourse.SetResult(restresults);
             };
@@ -29,31 +25,29 @@ namespace WebAPIAutomation.RestSharpHandler
             return await taskCompleteSourse.Task;
         }
 
-        public async Task<T> GetAsyncResponseFromCache<T>(RestClient client, Uri BaseUrl, IRestRequest request,string cacheKey,int minutes) where T : class, new()
+        public async Task<T> GetAsyncResponseFromCache<T>(RestClient client, Uri BaseUrl, IRestRequest request,string cacheKey) where T : class, new()
         {
             _errorLogger = UnityWrapper.Resolve<IErrorLogger>();
             _cacheService = UnityWrapper.Resolve<ICacheService>();
 
             var item = _cacheService.Get<T>(cacheKey);
-            if (item == null) //If the cache doesn't have the item
+
+            if (item == null) 
             {
-                var restresults = await client.ExecuteAsync<T>(request); //Get the item from the API call
+                var restresults = await client.ExecuteAsync<T>(request);
 
                 if (restresults.StatusCode == HttpStatusCode.OK)
                 {
-                    _cacheService.Set(cacheKey, restresults.Data,minutes); //Set that item into the cache 
-                                                         //so we can get it next time
+                    _cacheService.Set(cacheKey, restresults.Data); 
                     item = restresults.Data;
                 }
                 else
                 {
                     _errorLogger.LogError(BaseUrl, request, restresults);
-                    return default(T);
+                    return default;
                 }
             }
             return item;
         }
-
-        
     }
 }
