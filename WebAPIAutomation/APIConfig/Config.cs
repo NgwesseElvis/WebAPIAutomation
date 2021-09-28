@@ -44,8 +44,9 @@ namespace WebAPIAutomation.APIConfig
         public string GetFilePathFromDirectory()
         {
             var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var replacedBin = currentDirectory.Replace("bin","Log").Replace("Debug", "logger.txt").Replace("net5.0", "").Remove(78).Remove(77);
-            return replacedBin;
+            var replaced = currentDirectory.Replace("bin","Log").Replace("Debug", "logger.txt").Replace("net5.0", "");
+            var newString = replaced.Remove(replaced.Length-1,1);
+            return newString;
         }
     }
 }
