@@ -10,7 +10,8 @@ namespace WebAPIAutomation.RestSharpHandler
     {
         public void WriteLog(string message)
         {
-            string logPath = Config.LogPath;
+            Config config = new Config();
+            var logPath = config.GetFilePathFromDirectory();
             using(StreamWriter writer = new StreamWriter(logPath,true))
             {
                 writer.WriteLine($"{DateTime.Now}: {message}");
