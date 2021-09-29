@@ -25,7 +25,7 @@ namespace WebAPIAutomation.RestSharpHandler
 
             RestRequest request = new("/v1/latest", Method.GET);
             request.AddParameter("access_key", Config.APIKey);
-            request.AddUrlSegment("currency", currency);
+            request.AddParameter("symbols", currency);
             request.AddHeader("cache-control", "no-cache");
             var responseResults = _getResponse.GetAsyncResponse<object>(client, url, request).GetAwaiter().GetResult();
             return responseResults;
@@ -40,7 +40,7 @@ namespace WebAPIAutomation.RestSharpHandler
 
             RestRequest request = new("/v1/latest", Method.GET);
             request.AddParameter("access_key", Config.APIKey);
-            request.AddUrlSegment("currency", currency);
+            request.AddParameter("symbols", currency);
             var responseResults = _getResponse.GetAsyncResponseFromCache<object>(client, url, request,cacheKey).GetAwaiter().GetResult();
             return responseResults;
         }

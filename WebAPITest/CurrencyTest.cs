@@ -30,17 +30,15 @@ namespace WebAPITest
         }
 
         [Test, Category("Get USD")]
-        public void VerifyStatusCodea()
+        public void VerifyExchangeRate()
         {
             var response = _getRequest.GetExchangeRate("USD");
             var content = response.Content;
             var jsonObject = JObject.Parse(content);
-            var success = jsonObject["success"].ToString();
-            Assert.AreEqual(success,"True");
             var rates = jsonObject["rates"];
-            var dollarRate = rates["USD"].ToString();
-            var message = $"USD : {dollarRate}";
-            _logger.WriteLog(message);
+            var exchangeRate = rates["USD"];
+            var results = $"USD : {exchangeRate}";
+            _logger.WriteLog(results);
 
         }
     }

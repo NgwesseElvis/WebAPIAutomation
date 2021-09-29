@@ -31,17 +31,15 @@ namespace WebAPITest
         }
 
         [Test, Category("Get EUR from Cache")]
-        public void VerifyStatusCodea()
+        public void VerifyExchangeRate()
         {
             var response = _getRequest.GetExchangeRateFromCache("EUR", "euros");
             var responseObject = JsonConvert.SerializeObject(response);
             var jsonObject = JObject.Parse(responseObject);
-            var success = jsonObject["success"].ToString();
-            Assert.AreEqual(success, "True");
             var rates = jsonObject["rates"];
-            var euroRate = rates["EUR"].ToString();
-            var message = $"EUR : {euroRate}";
-            _logger.WriteLog(message);
+            var exchangeRate = rates["EUR"];
+            var results = $"EUR : {exchangeRate}";
+            _logger.WriteLog(results);
         }
     }
 }
